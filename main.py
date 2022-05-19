@@ -155,6 +155,35 @@ class FaceID(object):
 
     def TrainInit(self):
 
+        self.createGroup("A","Wing A")
+        self.createGroup("B","Wing B")
+        self.createGroup("C","Wing C")
+        self.createGroup("Random","Routine People")
+
+        self.addPerson("1","A")
+        self.addPerson("2","B")
+
+        self.addFace("1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h2.jpg?raw=true")
+        self.addFace("1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h3.jpg?raw=true")
+        self.addFace("1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h4.jpg?raw=true")
+        self.addFace("1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h5.jpg?raw=true")
+        self.addFace("1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h6.jpg?raw=true")
+        self.addFace("1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h7.jpg?raw=true")
+        self.addFace("2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n1.jpg?raw=true")
+        self.addFace("2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n2.jpg?raw=true")
+        self.addFace("2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
+        self.addFace("2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
+        self.addFace("2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
+
+        self.trainGroup("A")
+        self.trainGroup("B")
+        self.trainGroup("C")
+        self.trainGroup("Random")
+        time.sleep(2) # Give a second to train database
+        
+
+
+
     def DatabaseInit(self):
 
     def getPersonJson(self):
