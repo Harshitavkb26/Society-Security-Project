@@ -1,8 +1,11 @@
 import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time, requests, cv2, numpy, pyodbc, sys,os,subprocess
-from wsgiref import headers
+from urllib import response
+from httplib2 import Response
 import importlib as il
 import mysql.connector
-
+flag=1
+flag1=True
+sub=1
 def connectSQLDatabase():
     server = 'harshita.database.windows.net'
     database = 'society'
@@ -16,17 +19,21 @@ def connectSQLDatabase():
 cursor = connectSQLDatabase()
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
 
+
+
 class FaceID(object):
     """The FaceID class"""
 
     conn = http.client.HTTPConnection('centralindia.api.cognitive.microsoft.com')
     cam = cv2.CascadeClassifier('rtsp://admin:admin@123@192.168.43.200/1')
     #may be have to change the values
+    # cam = cv2.VideoCapture(0)
+    # cam.set(cv2.CAP_PROP_FPS, 0.1)
 
     personScanned = ''
 
     headers = {
-        #Request headers
+        # Request headers
         'Content-Type': 'application/json',
         'Ocp-Apim-Subscription-Key': '88c2b7ffcd274fa7ab53b70ec20f7b54',
     }
@@ -36,23 +43,29 @@ class FaceID(object):
 
         #mycursor = mydb.cursor()
 
-    def createGroup(self, wing, name):
+        cursor.execute()
+        result = cursor.fetchall()
+
+        for i in result:
+        return result
+
+    def createGroup(self, groupId, groupName):
 
         params = urllib.parse.urlencode({})
 
         body = {
-            "name" :'{}'.format(name),
+            "name" : '{}'.format(groupName),
         }
 
         try:
-            self.conn.request("PUT","/face/v1.0/persongroups/"+ wing +"?%s" % params, json.dumps(body), self.headers)
+            self.conn.request("PUT","/face/v1.0/persongroups/"+ groupId +"?%s" % params, json.dumps(body), self.headers)
             response = self.conn.getresponse()
             data = response.read()
             print("Group Created")
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
         
-    def addperson(self, name, targetGroup):
+    def addPerson(self, name, targetGroup):
 
         params = urllib.parse.urlencode({})
 
@@ -68,14 +81,59 @@ class FaceID(object):
         
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno,e.strerror))
+
     def addFace(self, targetName, targetGroup, URL):
+
+        # WARNING : going off the assumption that there are no duplicate names
+        listOfPersons = json.loads(self.listPersonsInGroup(targetGroup))
+        personId = ""
+        for person in listOfPersons:
+            if person["name"] == targetName:
+                personId = person["personId"]
+                break
+        
+        params = urllib.parse.urlencode({})
+
+        body = {
+            "url" : '{}'.formate(URL)
+        }
+
+        try:
+            self.conn.request("POST", "/face/v1.0/persongroups/" + targetGroup + "/persons/" + personId + "/persistedFaces?%s" % params, json.dumps(body), self.headers)
+            response = self.conn.getresponse()
+            data = response.read()
+            print("Face Added To: ", targetName)
+        except Exception as e:
+            print("[Errno {0}] {1}".format(e.errno, e.strerror))
+
 
 
     #returns a json list of people in the group
     def listPersonsInGroup(self, targetGroup):
 
+        params = urllib.parse.urlencode({})
+
+        try:
+            self.conn.request("GET","/face/v1.0/persongroups" + targetGroup + "/persons?%s" % params, "{body}", self.headers)
+            response = self.conn.getresponse()
+            data = response.read()
+            retun data
+        except Exception as e:
+            print("[Errno {0}] {1}".format(e.errno, e.strerror))
+
     #to train the group
     def trainGroup(self, targetGroup):
+
+        params = urllib.parse.urlencode({})
+
+        try:
+            self.conn.request("POST","face/v1.0/persongroups" + targetGroup + "/train?%s" % params, "{body}", self.headers)
+            response = self.conn.getresponse()
+            data = response.read()
+            print("Group Trained")
+        except Exception as e:
+            print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        
 
     # Returns faceId to be fed into identifyFace, returns -1(integer) if no face found
     def detectFace(self, imgData):
