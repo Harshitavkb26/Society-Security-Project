@@ -5,7 +5,7 @@ import importlib as il
 import mysql.connector
 flag=1
 flag1=True
-sub=1
+wg="A"
 def connectSQLDatabase():
     server = 'harshita.database.windows.net'
     database = 'society'
@@ -138,13 +138,77 @@ class FaceID(object):
     # Returns faceId to be fed into identifyFace, returns -1(integer) if no face found
     def detectFace(self, imgData):
 
+         detectHeaders = {'Content-Type': 'application/octet-stream',
+                   'Ocp-Apim-Subscription-Key': '88c2b7ffcd274fa7ab53b70ec20f7b54'}
+
+         url = 'https://centralindia.api.cognitive.microsoft.com/face/v1.0/detect'
+    
+         params = urllib.parse.urlencode({
+            'returnFaceId': 'true',
+            'returnFaceLandmarks': 'false',
+         })
+
+         try:
+        
+            response = requests.post(url, headers=detectHeaders, data=imgData)
+            return response.json()[0]["faceId"]
+         except IndexError:
+            print("NO FACE DETECTED")
+            return -1
+         except Exception as e:
+            print("[Errno {0}] {1}".format(e.errno, e.strerror))
+
     # To identify face returns name of the person 
-    def identifyFace(self, faceId, targetGroup):  
+    def identifyFace(self, faceId, targetGroup): 
+        params = urllib.parse.urlencode({})
+
+        body = {
+            'faceIds' : [faceId],
+            'personGroupId' : targetGroup
+        }
+
+        try:
+            self.conn.request("POST", "/face/v1.0/identify?%s" % params, json.dumps(body), self.headers)
+            response = self.conn.getresponse()
+            data = json.loads(response.read())
+
+            if not data or not data[0]["candidates"]:
+                raise IndexError()
+
+            candidatePersonId = data[0]["candidates"][0]["personId"]
+            listOfPersons = json.loads(self.listPersonsInGroup(targetGroup))
+            for person in listOfPersons:
+                if person["personId"] == candidatePersonId:
+                    print("PERSON IDENTIFIED: " + person["name"])
+                    return person["name"]
+
+        except IndexError:
+            print("***** Idk something went wrong *****")
+        except Exception as e:
+            print("[Errno {0}] {1}".format(e.errno, e.strerror)) 
 
     def addPersonToDatabase(self, name, flat, wing)
 
     # to take entries
-    def takeEntries():
+    def takeEntries(self, wing, flag):
+
+        i=0
+        try:
+            while True:
+                # cam = cv2.VideoCapture(0)
+                s, img = self.cam.read()
+
+                img = cv2.resize(img, (1000, 500))
+                cv2.imshow('frame', img)
+                imgData = cv2.imencode(".jpg",img)[1].tostring()
+
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+                i=i+1;
+                if i % 10000 == 0:
+                    detectedFaceId = self.detectFace(imgData)
+                    if detectedFaceId != -1:
+
 
     def getLastPersonScanned(self):
         return self.personScanned 
@@ -178,7 +242,7 @@ class FaceID(object):
         self.trainGroup("A")
         self.trainGroup("B")
         self.trainGroup("C")
-        self.trainGroup("Random")
+        self.trainGroup("Known Members")
         time.sleep(2) # Give a second to train database
         
 
@@ -188,8 +252,21 @@ class FaceID(object):
 
     def getPersonJson(self):
 
-    def main(self, flag, sub):
+    def main(self, flag, wg):
 
+        print('--------------------------------')
+        #self.fetchSQLData()
+        if wg=="A":
+            self.takeEntries("A",flag)
+        elif wg=="B":
+            self.takeEntries("B",flag)
+        elif wg=="C":
+            self.takeEntries("C",flag)
+        elif wg=="Known Members":
+            self.takeEntries("Known Members",flag)
+
+        else:
+            self.cam.release()
 
 if __name__ == "__main__":
     app = FaceID()
