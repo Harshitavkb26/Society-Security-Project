@@ -47,7 +47,7 @@ class FaceID(object):
         result = cursor.fetchall()
 
         for i in result:
-        return result
+            return result
 
     def createGroup(self, groupId, groupName):
 
@@ -225,11 +225,11 @@ class FaceID(object):
                             known = 2
                         
                         if known == 1 :
-                            checkQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person[1] + "' AND name = '" + person[0]  + "' AND wing = '" + "knownMembers" + "');"
+                            checkQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person[1] + "' AND name = '" + person[0]  + "' AND wing = '" + 'knownMembers' + "');"
                             cursor.execute(checkQuery)
                             data = cursor.fetchone()
-                            print('Adding person into wing entry table')
-                            addQuery = "INSERT INTO knownmembers" + wing + " (flatnumber, name , contactnumber, timestamp) VALUES ('" + person[1] + "', '" + person[0]  + "', '" + data["contactnumber"] + "');"
+                            print('Adding person into known members entry table')
+                            addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber, timestamp) VALUES ('" + person[1] + "', '" + person[0] + "', '" + data["contactnumber"] + "', '" + '123' + "');"
 
 
                         if known == 2 :
@@ -237,7 +237,12 @@ class FaceID(object):
                             cursor.execute(checkPresentQuery)
                             data = cursor.fetchone()
                             print('Adding person into wing entry table')
-                            addQuery = "INSERT INTO wing" + wing + " (flatnumber, name , contactnumber, timestamp) VALUES ('" + person[1] + "', '" + person[0]  + "', '" + data["contactnumber"] + "');"
+                            addQuery = "INSERT INTO wing'" + wing + "' (flatnumber, name , contactnumber, timestamp) VALUES ('" + person[1] + "', '" + person[0] + "', '" + data["contactnumber"] + "', '" + '123' + "');"
+
+            #cam.release()
+            #cv2.destroyAllWindows()
+        except KeyboardInterrupt:
+            self.conn.close()
 
 
                             
@@ -248,15 +253,17 @@ class FaceID(object):
         return self.personScanned 
 
     def getPersonDetails(self, name):
+        return 1
 
     def wipeEntryLog(self, timetablekey):
+        return 1
 
     def TrainInit(self):
 
         self.createGroup("A","Wing A")
         self.createGroup("B","Wing B")
         self.createGroup("C","Wing C")
-        self.createGroup("Random","Routine People")
+        self.createGroup("knownMembers","Routine People")
 
         self.addPerson("harshita","1","A")
         self.addPerson("Nikita","2","B")
@@ -287,26 +294,29 @@ class FaceID(object):
         self.addPersonToDatabase("Nikita","2","B","9770350519")
 
     def getPersonJson(self):
+        return 1
 
     def main(self, flag, wg):
+        self.TrainInit() # Init only once
+        self.DatabaseInit() # Also init only once
 
-        print('--------------------------------')
-        #self.fetchSQLData()
-        if wg=="A":
-            self.takeEntries("A",flag)
-        elif wg=="B":
-            self.takeEntries("B",flag)
-        elif wg=="C":
-            self.takeEntries("C",flag)
-        elif wg=="knownMembers":
-            self.takeEntries("knownMembers",flag)
+        # print('--------------------------------')
+        # #self.fetchSQLData()
+        # if wg=="A":
+        #     self.takeEntries("A",flag)
+        # elif wg=="B":
+        #     self.takeEntries("B",flag)
+        # elif wg=="C":
+        #     self.takeEntries("C",flag)
+        # elif wg=="knownMembers":
+        #     self.takeEntries("knownMembers",flag)
 
-        else:
-            self.cam.release()
+        # else:
+        #     self.cam.release()
 
 if __name__ == "__main__":
     app = FaceID()
     #flag=1
 
-    app.main(flag,sub)  
+    app.main(flag,wg)  
     #app.main() 
