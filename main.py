@@ -11,7 +11,7 @@ def connectSQLDatabase():
     database = 'society'
     username = 'Harshi'
     password = 'Anjali123'
-    driver= "{SQL Server}"
+    driver= "{ODBC Driver 17 for SQL Server}"
     cnxn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password)
     cursor = cnxn.cursor()
     return cursor
@@ -89,10 +89,19 @@ class FaceID(object):
         # WARNING : going off the assumption that there are no duplicate names
         listOfPersons = json.loads(self.listPersonsInGroup(targetGroup))
         personId = ""
-        for person in listOfPersons:
-            if person["name"] == targetName and person["flatnumber"] == flatnumber :
-                personId = person["personId"]
-                break
+        # for person in listOfPersons:
+        #     if person["name"] == targetName and person["flatnumber"] == flatnumber :
+        #         personId = person["personId"]
+        #         print("Face added")
+        #         break
+
+        # for x,y in listOfPersons.items():
+        #     if x == name and y == targetName :
+        #         if x == flatnumber and y == flatnumber :
+        #             if x == personId:
+        #                 personId = y
+        #                 print("ID returned")
+        #             break
         
         params = urllib.parse.urlencode({})
 
@@ -217,7 +226,7 @@ class FaceID(object):
                     if detectedFaceId != -1:
                         known = 0
                         person = self.identifyFace(detectedFaceId, wing)
-                        randperson = self.identifyFace(detectedFaceId, "knownMembers")
+                        randperson = self.identifyFace(detectedFaceId, "knownmembers")
                         if not person :
                             if randperson :
                                 known = 1
@@ -243,6 +252,7 @@ class FaceID(object):
             #cv2.destroyAllWindows()
         except KeyboardInterrupt:
             self.conn.close()
+        print("takeEntries runs successfully")
 
 
                             
@@ -260,31 +270,49 @@ class FaceID(object):
 
     def TrainInit(self):
 
-        self.createGroup("A","Wing A")
-        self.createGroup("B","Wing B")
-        self.createGroup("C","Wing C")
-        self.createGroup("knownMembers","Routine People")
+        # self.createGroup("A","Wing A")
+        # self.createGroup("B","Wing B")
+        # self.createGroup("C","Wing C")
+        # self.createGroup("knownMembers","Routine People")
 
-        self.addPerson("harshita","1","A")
-        self.addPerson("Nikita","2","B")
+        # self.addPerson("harshita","1","A")
+        # self.addPerson("Nikita","2","B")
 
-        self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h2.jpg?raw=true")
-        self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h3.jpg?raw=true")
-        self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h4.jpg?raw=true")
-        self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h5.jpg?raw=true")
-        self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h6.jpg?raw=true")
-        self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h7.jpg?raw=true")
-        self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n1.jpg?raw=true")
-        self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n2.jpg?raw=true")
-        self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
-        self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
-        self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
+        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h2.jpg?raw=true")
+        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h3.jpg?raw=true")
+        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h4.jpg?raw=true")
+        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h5.jpg?raw=true")
+        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h6.jpg?raw=true")
+        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h7.jpg?raw=true")
+        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n1.jpg?raw=true")
+        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n2.jpg?raw=true")
+        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
+        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
+        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
 
-        self.trainGroup("A")
-        self.trainGroup("B")
-        self.trainGroup("C")
-        self.trainGroup("knownMembers")
-        time.sleep(2) # Give a second to train database
+        # self.trainGroup("A")
+        # self.trainGroup("B")
+        # self.trainGroup("C")
+        # self.trainGroup("knownMembers")
+        # time.sleep(2) # Give a second to train database
+
+
+        listOfPersons = json.loads(self.listPersonsInGroup("A"))
+        personId = ""
+        # for person in listOfPersons:
+        #     if person["name"] == "harshita" and person["flatnumber"] == "1" :
+        #         personId = person["personId"]
+        #         print("Face added")
+        #         break
+
+        # for x,y in listOfPersons.items():
+        #     if x == "name" and y == "harshita" :
+        #         if x == "flatnumber" and y == "1" :
+        #             if x == personId:
+        #                 personId = y
+        #                 print("ID returned")
+        #             break
+        print("Traininit runs successfully")
         
 
 
@@ -298,7 +326,7 @@ class FaceID(object):
 
     def main(self, flag, wg):
         self.TrainInit() # Init only once
-        self.DatabaseInit() # Also init only once
+        #self.DatabaseInit() # Also init only once
 
         # print('--------------------------------')
         # #self.fetchSQLData()

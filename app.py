@@ -97,7 +97,7 @@ def wings2():
     # securityApp.wipeAttendanceLog("4")
     # securityApp.wipeAttendanceLog("5")
     # securityApp.wipeAttendanceLog("6")
-     securityApp.main(1,"C")
+    securityApp.main(1,"C")
 
 # @app.route("/course3", methods=["GET", "POST"])
 # def wings3():
