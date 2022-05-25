@@ -1,11 +1,12 @@
 import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time, requests, cv2, numpy, pyodbc, sys,os,subprocess
 from urllib import response
+import cv2
 from httplib2 import Response
 import importlib as il
 import mysql.connector
 flag=1
 flag1=True
-wg="A"
+wg="winga"
 def connectSQLDatabase():
     server = 'harshita.database.windows.net'
     database = 'society'
@@ -24,10 +25,10 @@ faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
 class FaceID(object):
     """The FaceID class"""
 
-    conn = http.client.HTTPConnection('centralindia.api.cognitive.microsoft.com')
-    cam = cv2.CascadeClassifier('rtsp://admin:admin@123@192.168.43.200/1')
+    conn = http.client.HTTPSConnection('buildfaceapi.cognitiveservices.azure.com')
+    # cam = cv2.CascadeClassifier('rtsp://admin:admin@123@192.168.43.200/1')
     #may be have to change the values
-    # cam = cv2.VideoCapture(0)
+    cam = cv2.VideoCapture(1000)
     # cam.set(cv2.CAP_PROP_FPS, 0.1)
 
     personScanned = ''
@@ -35,7 +36,7 @@ class FaceID(object):
     headers = {
         # Request headers
         'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': '88c2b7ffcd274fa7ab53b70ec20f7b54',
+        'Ocp-Apim-Subscription-Key': 'c1e050016f4241a28aefb095318529e8',
     }
 
     def fetchSQLData(self):
@@ -43,11 +44,12 @@ class FaceID(object):
 
         #mycursor = mydb.cursor()
 
-        cursor.execute()
+        cursor.execute("SELECT * FROM [dbo].[societymembers]")
         result = cursor.fetchall()
 
         for i in result:
-            return result
+            print(i)
+        return result
 
     def createGroup(self, groupId, groupName):
 
@@ -61,43 +63,45 @@ class FaceID(object):
             self.conn.request("PUT","/face/v1.0/persongroups/"+ groupId +"?%s" % params, json.dumps(body), self.headers)
             response = self.conn.getresponse()
             data = response.read()
+            print(data)
             print("Group Created")
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
         
-    def addPerson(self, name, flatnumber, targetGroup):
+    def addPerson(self, name, targetGroup):
 
         params = urllib.parse.urlencode({})
 
         body = {
             "name": '{}'.format(name),
-            "flatnumber": '{}'.format(flatnumber),
         }
 
         try:
-            self.conn.request("POST","/face/v1.0" + targetGroup + "/persons?%s" % params, json.dumps(body), self.headers)
+            self.conn.request("POST", "/face/v1.0/persongroups/" + targetGroup + "/persons?%s" % params, json.dumps(body), self.headers)
             response = self.conn.getresponse()
             data = response.read()
+            print(data)
             print("Person Added: ", name)
-            print("Flat Added: ", flatnumber)
         
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno,e.strerror))
+        
 
-    def addFace(self, targetName, flatnumber, targetGroup, URL):
+    def addFace(self, targetName, targetGroup, URL):
 
         # WARNING : going off the assumption that there are no duplicate names
         listOfPersons = json.loads(self.listPersonsInGroup(targetGroup))
         personId = ""
-        # for person in listOfPersons:
-        #     if person["name"] == targetName and person["flatnumber"] == flatnumber :
-        #         personId = person["personId"]
-        #         print("Face added")
-        #         break
+        for person in listOfPersons:
+            print(person)
+            if person["name"] == targetName :
+               
+                personId = person["personId"]
+                print("PersonId added")
+                break
 
         # for x,y in listOfPersons.items():
         #     if x == name and y == targetName :
-        #         if x == flatnumber and y == flatnumber :
         #             if x == personId:
         #                 personId = y
         #                 print("ID returned")
@@ -106,7 +110,7 @@ class FaceID(object):
         params = urllib.parse.urlencode({})
 
         body = {
-            "url" : '{}'.formate(URL)
+            "url" : '{}'.format(URL)
         }
 
         try:
@@ -125,9 +129,10 @@ class FaceID(object):
         params = urllib.parse.urlencode({})
 
         try:
-            self.conn.request("GET","/face/v1.0/persongroups" + targetGroup + "/persons?%s" % params, "{body}", self.headers)
+            self.conn.request("GET","/face/v1.0/persongroups/" + targetGroup + "/persons?%s" % params, "{body}", self.headers)
             response = self.conn.getresponse()
             data = response.read()
+            print("data retruned succesfully.")
             return data
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
@@ -138,7 +143,7 @@ class FaceID(object):
         params = urllib.parse.urlencode({})
 
         try:
-            self.conn.request("POST","face/v1.0/persongroups" + targetGroup + "/train?%s" % params, "{body}", self.headers)
+            self.conn.request("POST","face/v1.0/persongroups/" + targetGroup + "/train?%s" % params, "{body}", self.headers)
             response = self.conn.getresponse()
             data = response.read()
             print("Group Trained")
@@ -152,7 +157,7 @@ class FaceID(object):
          detectHeaders = {'Content-Type': 'application/octet-stream',
                    'Ocp-Apim-Subscription-Key': '88c2b7ffcd274fa7ab53b70ec20f7b54'}
 
-         url = 'https://centralindia.api.cognitive.microsoft.com/face/v1.0/detect'
+         url = 'https://buildfaceapi.cognitiveservices.azure.com/face/v1.0/detect'
     
          params = urllib.parse.urlencode({
             'returnFaceId': 'true',
@@ -191,8 +196,7 @@ class FaceID(object):
             for person in listOfPersons:
                 if person["personId"] == candidatePersonId:
                     print("PERSON IDENTIFIED: " + person["name"])
-                    print("persons flat identify: " + person["flatnumber"])
-                    return [person["name"], person["flatnumber"]]
+                    return person["name"]
 
         except IndexError:
             print("***** Idk something went wrong *****")
@@ -209,47 +213,50 @@ class FaceID(object):
 
         i=0
         try:
+            # cam = cv2.VideoCapture(1000)
             while True:
-                # cam = cv2.VideoCapture(0)
-                s, img = self.cam.read()
+                
+                ret, img = self.cam.read()
 
                 img = cv2.resize(img, (1000, 500))
                 cv2.imshow('frame', img)
-                imgData = cv2.imencode(".jpg",img)[1].tostring()
+                # imgData = cv2.imencode(".jpg",img)[1].tostring()
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-                i=i+1;
-                if i % 10000 == 0:
+                # i=i+1;
+                # if i % 10000 == 0:
 
-                    detectedFaceId = self.detectFace(imgData)
-                    if detectedFaceId != -1:
-                        known = 0
-                        person = self.identifyFace(detectedFaceId, wing)
-                        randperson = self.identifyFace(detectedFaceId, "knownmembers")
-                        if not person :
-                            if randperson :
-                                known = 1
-                        if person :
-                            known = 2
+                #     detectedFaceId = self.detectFace(imgData)
+                #     if detectedFaceId != -1:
+                #         known = 0
+                #         person = self.identifyFace(detectedFaceId, wing)
+                #         randperson = self.identifyFace(detectedFaceId, "knownmembers")
+                #         if not person :
+                #             if randperson :
+                #                 known = 1
+                #                 randperson_name , randperson_desd = randperson.split("_")
+                #         if person :
+                #             known = 2
+                #             person_name , person_flatnumber = person.split("_")
                         
-                        if known == 1 :
-                            checkQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person[1] + "' AND name = '" + person[0]  + "' AND wing = '" + 'knownMembers' + "');"
-                            cursor.execute(checkQuery)
-                            data = cursor.fetchone()
-                            print('Adding person into known members entry table')
-                            addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber, timestamp) VALUES ('" + person[1] + "', '" + person[0] + "', '" + data["contactnumber"] + "', '" + '123' + "');"
+                #         if known == 1 :
+                #             checkQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + randperson_desd + "' AND name = '" + randperson_name  + "' AND wing = '" + 'knownMembers' + "');"
+                #             cursor.execute(checkQuery)
+                #             data = cursor.fetchone()
+                #             print('Adding person into known members entry table')
+                #             addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber, timestamp) VALUES ('" + randperson_desd + "', '" + randperson_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
 
 
-                        if known == 2 :
-                            checkPresentQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person[1] + "' AND name = '" + person[0]  + "' AND wing = '" + wing + "');"
-                            cursor.execute(checkPresentQuery)
-                            data = cursor.fetchone()
-                            print('Adding person into wing entry table')
-                            addQuery = "INSERT INTO wing'" + wing + "' (flatnumber, name , contactnumber, timestamp) VALUES ('" + person[1] + "', '" + person[0] + "', '" + data["contactnumber"] + "', '" + '123' + "');"
+                #         if known == 2 :
+                #             checkPresentQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person_flatnumber + "' AND name = '" + person_name  + "' AND wing = '" + wing + "');"
+                #             cursor.execute(checkPresentQuery)
+                #             data = cursor.fetchone()
+                #             print('Adding person into wing entry table')
+                #             addQuery = "INSERT INTO wing'" + wing + "' (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
 
-            #cam.release()
-            #cv2.destroyAllWindows()
+            cam.release()
+            cv2.destroyAllWindows()
         except KeyboardInterrupt:
             self.conn.close()
         print("takeEntries runs successfully")
@@ -270,35 +277,40 @@ class FaceID(object):
 
     def TrainInit(self):
 
-        # self.createGroup("A","Wing A")
-        # self.createGroup("B","Wing B")
-        # self.createGroup("C","Wing C")
-        # self.createGroup("knownMembers","Routine People")
+        #  self.createGroup("winga","Wing A")
+        #  self.createGroup("wingb","Wing B")
+        #  self.createGroup("wingc","Wing C")
+        #  self.createGroup("knownmembers","Routine People")
 
-        # self.addPerson("harshita","1","A")
-        # self.addPerson("Nikita","2","B")
+        # self.addPerson("HarshitaVerma_1","winga")
+        # self.addPerson("NikitaVerma_2","wingb")
+        # self.addPerson("DakshBerry_1","wingc")
 
-        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h2.jpg?raw=true")
-        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h3.jpg?raw=true")
-        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h4.jpg?raw=true")
-        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h5.jpg?raw=true")
-        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h6.jpg?raw=true")
-        # self.addFace("harshita","1","A","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h7.jpg?raw=true")
-        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n1.jpg?raw=true")
-        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n2.jpg?raw=true")
-        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
-        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
-        # self.addFace("Nikita","2","B","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
+        #  self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/1.jpg?raw=true")
+        # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/2.jpg?raw=true")
+        # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/3.jpg?raw=true")
+        # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/4.jpg?raw=true")
+        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h2.jpg?raw=true")
+        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h3.jpg?raw=true")
+        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h4.jpg?raw=true")
+        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h5.jpg?raw=true")
+        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h6.jpg?raw=true")
+        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h7.jpg?raw=true")
+        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n1.jpg?raw=true")
+        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n2.jpg?raw=true")
+        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
+        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
+        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
 
-        # self.trainGroup("A")
-        # self.trainGroup("B")
-        # self.trainGroup("C")
+        # self.trainGroup("winga")
+        # self.trainGroup("wingb")
+        # self.trainGroup("wingc")
         # self.trainGroup("knownMembers")
         # time.sleep(2) # Give a second to train database
 
 
-        listOfPersons = json.loads(self.listPersonsInGroup("A"))
-        personId = ""
+        # listOfPersons = json.loads(self.listPersonsInGroup("A")
+        # personId = ""
         # for person in listOfPersons:
         #     if person["name"] == "harshita" and person["flatnumber"] == "1" :
         #         personId = person["personId"]
@@ -318,25 +330,26 @@ class FaceID(object):
 
 
     def DatabaseInit(self):
-        self.addPersonToDatabase("harshita","1","A","7225051539")
-        self.addPersonToDatabase("Nikita","2","B","9770350519")
+        self.addPersonToDatabase("HarshitaVerma","1","winga","7225051539")
+        self.addPersonToDatabase("NikitaVerma","2","wingb","9770350519")
+        self.addPersonToDatabase("DakshBerry","1","wingc","8959673327")
 
     def getPersonJson(self):
         return 1
 
     def main(self, flag, wg):
-        self.TrainInit() # Init only once
-        #self.DatabaseInit() # Also init only once
+        # self.TrainInit() # Init only once
+        # self.DatabaseInit() # Also init only once
 
-        # print('--------------------------------')
-        # #self.fetchSQLData()
-        # if wg=="A":
-        #     self.takeEntries("A",flag)
-        # elif wg=="B":
-        #     self.takeEntries("B",flag)
-        # elif wg=="C":
-        #     self.takeEntries("C",flag)
-        # elif wg=="knownMembers":
+        print('--------------------------------')
+        # self.fetchSQLData()
+        if wg=="winga":
+            self.takeEntries("winga",flag)
+        # elif wg=="wingb":
+        #     self.takeEntries("wingb",flag)
+        # elif wg=="wingc":
+        #     self.takeEntries("wingc",flag)
+        # elif wg=="knownmembers":
         #     self.takeEntries("knownMembers",flag)
 
         # else:
