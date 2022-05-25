@@ -28,7 +28,7 @@ class FaceID(object):
     conn = http.client.HTTPSConnection('buildfaceapi.cognitiveservices.azure.com')
     # cam = cv2.CascadeClassifier('rtsp://admin:admin@123@192.168.43.200/1')
     #may be have to change the values
-    cam = cv2.VideoCapture(1000)
+    cam = cv2.VideoCapture(0)
     # cam.set(cv2.CAP_PROP_FPS, 0.1)
 
     personScanned = ''
@@ -218,44 +218,44 @@ class FaceID(object):
                 
                 ret, img = self.cam.read()
 
-                img = cv2.resize(img, (1000, 500))
+                # img = cv2.resize(img, (1000, 500))
                 cv2.imshow('frame', img)
-                # imgData = cv2.imencode(".jpg",img)[1].tostring()
+                imgData = cv2.imencode(".jpg",img)[1].tostring()
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-                # i=i+1;
-                # if i % 10000 == 0:
+                i=i+1;
+                if i % 10000 == 0:
 
-                #     detectedFaceId = self.detectFace(imgData)
-                #     if detectedFaceId != -1:
-                #         known = 0
-                #         person = self.identifyFace(detectedFaceId, wing)
-                #         randperson = self.identifyFace(detectedFaceId, "knownmembers")
-                #         if not person :
-                #             if randperson :
-                #                 known = 1
-                #                 randperson_name , randperson_desd = randperson.split("_")
-                #         if person :
-                #             known = 2
-                #             person_name , person_flatnumber = person.split("_")
+                    detectedFaceId = self.detectFace(imgData)
+                    if detectedFaceId != -1:
+                        known = 0
+                        person = self.identifyFace(detectedFaceId, wing)
+                        randperson = self.identifyFace(detectedFaceId, "knownmembers")
+                        if not person :
+                            if randperson :
+                                known = 1
+                                randperson_name , randperson_desd = randperson.split("_")
+                        if person :
+                            known = 2
+                            person_name , person_flatnumber = person.split("_")
                         
-                #         if known == 1 :
-                #             checkQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + randperson_desd + "' AND name = '" + randperson_name  + "' AND wing = '" + 'knownMembers' + "');"
-                #             cursor.execute(checkQuery)
-                #             data = cursor.fetchone()
-                #             print('Adding person into known members entry table')
-                #             addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber, timestamp) VALUES ('" + randperson_desd + "', '" + randperson_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
+                        if known == 1 :
+                            checkQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + randperson_desd + "' AND name = '" + randperson_name  + "' AND wing = '" + 'knownMembers' + "');"
+                            cursor.execute(checkQuery)
+                            data = cursor.fetchone()
+                            print('Adding person into known members entry table')
+                            addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber, timestamp) VALUES ('" + randperson_desd + "', '" + randperson_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
 
 
-                #         if known == 2 :
-                #             checkPresentQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person_flatnumber + "' AND name = '" + person_name  + "' AND wing = '" + wing + "');"
-                #             cursor.execute(checkPresentQuery)
-                #             data = cursor.fetchone()
-                #             print('Adding person into wing entry table')
-                #             addQuery = "INSERT INTO wing'" + wing + "' (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
+                        if known == 2 :
+                            checkPresentQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person_flatnumber + "' AND name = '" + person_name  + "' AND wing = '" + wing + "');"
+                            cursor.execute(checkPresentQuery)
+                            data = cursor.fetchone()
+                            print('Adding person into wing entry table')
+                            addQuery = "INSERT INTO wing'" + wing + "' (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
 
-            cam.release()
+            self.cam.release()
             cv2.destroyAllWindows()
         except KeyboardInterrupt:
             self.conn.close()

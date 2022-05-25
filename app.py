@@ -8,7 +8,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 securityApp = pro.FaceID()
-wg="A"
+wg="winga"
 counter=0
 fix=0
 @app.route("/")
@@ -57,9 +57,9 @@ def stops():
     # return render_template("index.html")
 
     # self.conn.close()
-@app.route("/wingA", methods=["GET", "POST"])
+@app.route("/winga", methods=["GET", "POST"])
 def wingsA():
-    wg="A"
+    wg="winga"
     # securityApp.wipeAttendanceLog("2")
     # securityApp.wipeAttendanceLog("3")
     # securityApp.wipeAttendanceLog("4")
@@ -78,26 +78,26 @@ def wingsA():
 #
 #     # POST request
 #     elif request.method == "POST":
-    securityApp.main(1,"A")
-@app.route("/wingB", methods=["GET", "POST"])
+    securityApp.main(1,"winga")
+@app.route("/wingb", methods=["GET", "POST"])
 def wingsB():
-    wg="B"
+    wg="wingb"
     # securityApp.wipeAttendanceLog("1")
     # securityApp.wipeAttendanceLog("3")
     # securityApp.wipeAttendanceLog("4")
     # securityApp.wipeAttendanceLog("5")
     # securityApp.wipeAttendanceLog("6")
-    securityApp.main(1,"B")
+    securityApp.main(1,"wingb")
 
-@app.route("/course2", methods=["GET", "POST"])
-def wings2():
-    wg="C"
+@app.route("/wingc", methods=["GET", "POST"])
+def wingsC():
+    wg="wingc"
     # securityApp.wipeAttendanceLog("1")
     # securityApp.wipeAttendanceLog("2")
     # securityApp.wipeAttendanceLog("4")
     # securityApp.wipeAttendanceLog("5")
     # securityApp.wipeAttendanceLog("6")
-    securityApp.main(1,"C")
+    securityApp.main(1,"wingc")
 
 # @app.route("/course3", methods=["GET", "POST"])
 # def wings3():

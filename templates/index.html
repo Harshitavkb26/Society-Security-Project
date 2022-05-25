@@ -1,0 +1,549 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Logis &mdash; Onepage Website Template by Free-Template.co</title>
+    <meta charset="utf-8">
+    <!-- <meta name="viewport" content="width=device-width , initial-scale=1.0, shrink-to-fit=no"> -->
+
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="Free-Template.co" />
+
+    
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,700,900|Display+Playfair:200,300,400,700">
+    <link rel="stylesheet" href="/static/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/magnific-popup.css">
+    <link rel="stylesheet" href="/static/css/jquery-ui.css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" href="/static/css/bootstrap-datepicker.css">
+
+    <link rel="stylesheet" href="/static/fonts/flaticon/font/flaticon.css">
+
+
+
+    <link rel="stylesheet" href="/static/css/aos.css">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+      body {font-family: Arial, Helvetica, sans-serif;}
+      
+      /* The Modal (background) */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+      
+      /* Modal Content */
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+      
+      /* The Close Button */
+      .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .hello {
+    margin-left: -216px;
+    width: 140%;
+}
+body{
+  overflow-x: hidden;
+}
+      </style>
+  </head>
+  <body data-spy="scroll" data-target=".site-navbar-target" data-offset="200">
+
+  <!-- <div class="site-wrap"> -->
+
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <header class="site-navbar py-3 js-site-navbar site-navbar-target" role="banner" id="site-navbar">
+
+      <div class="container" style="max-width: 100% !important;">
+        <div class="row align-items-center">
+
+          <div class="col-11 col-xl-2 site-logo">
+            <!-- <h1 class="mb-0"><a href="index.html" class="text-white h2 mb-0">ABV-IIITM</a></h1> -->
+          </div>
+          <!-- <div class="col-12 col-md-10 d-none d-xl-block">
+            <nav class="site-navigation position-relative text-right" role="navigation">
+
+              <ul class="site-menu js-clone-nav mx-auto d-none d-lg-block">
+                <li><a href="#section-home" class="nav-link">Home</a></li>
+                <li class="has-children">
+                  <a href="#section-about" class="nav-link">About Us</a>
+                  <ul class="dropdown">
+                    <li><a href="#section-how-it-works" class="nav-link">How It Works</a></li>
+                    <li><a href="#section-our-team" class="nav-link">Our Team</a></li>
+                  </ul>
+                </li>
+                <li><a href="#section-services" class="nav-link">Services</a></li>
+                <li><a href="#section-industries" class="nav-link">Industries</a></li>
+                <li><a href="#section-blog" class="nav-link">Blog</a></li>
+                <li><a href="#section-contact" class="nav-link">Contact</a></li>
+              </ul>
+            </nav>
+          </div> -->
+
+
+          <div class="d-inline-block d-xl-none ml-md-0 mr-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle"><span class="icon-menu h3"></span></a></div>
+
+          </div>
+
+        </div>
+      <!-- </div> -->
+
+    </header>
+
+
+
+    <div class="site-blocks-cover overlay hello" style="background-image: url(../static/images/img_7.jpg);" data-aos="fade" data-stellar-background-ratio="0.5" id="section-home">
+      <div class="container">
+        <div class="row align-items-center justify-content-center text-center">
+
+          <div class="col-md-8" data-aos="fade-up" data-aos-delay="400">
+
+
+            <h1 class="text-white font-weight-light text-uppercase font-weight-bold" data-aos="fade-up">Attendance System</h1>
+            <!-- <p class="mb-5" data-aos="fade-up" data-aos-delay="100">A Logistics Company</p> -->
+            <p data-aos="fade-up" data-aos-delay="200"><button class="btn btn-primary py-3 px-5 text-white" id="myBtn">Get Started!</button></p>
+
+            <!-- <p data-aos="fade-up" data-aos-delay="200"><a href="{{ url_for('courses') }}" class="btn btn-primary py-3 px-5 text-white" onclick="myfunction()">Get Started!</a></p> -->
+            <p data-aos="fade-up" data-aos-delay="200"><a href="stops" class="btn btn-primary py-3 px-5 text-white">Stop!</a></p>
+            <p data-aos="fade-up" data-aos-delay="200"><a href="createPDF" class="btn btn-primary py-3 px-5 text-white">PDF</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <div class="site-section bg-image overlay" style="background-image: url('../static/images/img_6.jpg');" id="section-how-it-works">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-md-7 text-center border-primary">
+            <h2 class="font-weight-light text-primary" data-aos="fade">How It Works</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
+            <div class="how-it-work-item">
+              <span class="number">1</span>
+              <div class="how-it-work-body">
+                <h2>Select the course</h2>
+                <p class="mb-5">The system is fed with all the subjects of various batches in the institute. Instructor just has to select the subject displayed as a drop-down list after clicking on the course button</p>
+                <!-- <ul class="ul-check list-unstyled success">
+                  <!-- <li class="text-white"></li> -->
+                  <!-- <li class="text-white">Voluptatum porro expedita labore esse</li> -->
+                  <!-- <li class="text-white">Voluptas unde sit pariatur earum</li> -->
+                <!-- </ul> --> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
+            <div class="how-it-work-item">
+              <span class="number">2</span>
+              <div class="how-it-work-body">
+                <h2>Click on START Button</h2>
+                <p class="mb-5">After selecting the course, click on START button.</p>
+                <!-- <ul class="ul-check list-unstyled success">
+                  <li class="text-white">Error minus sint nobis dolor</li>
+                  <li class="text-white">Voluptatum porro expedita labore esse</li>
+                  <li class="text-white">Voluptas unde sit pariatur earum</li>
+                </ul> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="300">
+            <div class="how-it-work-item">
+              <span class="number">3</span>
+              <div class="how-it-work-body">
+                <h2>Click on STOP button</h2>
+                <p class="mb-5">After sometime, instructor can stop the system from taking attendance of the students whenever he/she wishes to.</p>
+                <!-- <ul class="ul-check list-unstyled success">
+                  <li class="text-white">Error minus sint nobis dolor</li>
+                  <li class="text-white">Voluptatum porro expedita labore esse</li>
+                  <li class="text-white">Voluptas unde sit pariatur earum</li>
+                </ul> -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+   
+
+    <div class="site-section border-bottom" id="section-our-team">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-md-7 text-center border-primary">
+            <h2 class="font-weight-light text-primary" data-aos="fade">Developers</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
+            <div class="person">
+              <img src="../static/images/Abhishek_pic.jpg" alt="Image" class="rounded-circle" alt="Cinque Terre" width="304" height="236">
+              <h3>Abhishek Arya</h3>
+              <p class="position text-muted">Developer</p>
+              <p class="mb-4"><strong>Designation</strong>:Student at ABV-IIITM <br />
+
+
+
+<strong>Email</strong>: ipg_2016005@iiitm.ac.in</p>
+              <ul class="ul-social-circle">
+                <li><a href="#"><span class="icon-facebook"></span></a></li>
+                <li><a href="#"><span class="icon-twitter"></span></a></li>
+                <li><a href="#"><span class="icon-linkedin"></span></a></li>
+                <li><a href="#"><span class="icon-instagram"></span></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
+            <div class="person">
+              <img src="../static/images/person_8.jpg" alt="Image" class="rounded-circle" alt="Cinque Terre" width="304" height="236">
+              <h3>Daksh Berry</h3>
+              <p class="position text-muted">Developer</p>
+              <p class="mb-4"><strong>Designation</strong>:Student at ABV-IIITM<br />
+
+
+
+<strong>Email</strong>: ipg_2016031@iiitm.ac.in<br />
+
+              <ul class="ul-social-circle">
+                <li><a href="#"><span class="icon-facebook"></span></a></li>
+                <li><a href="#"><span class="icon-twitter"></span></a></li>
+                <li><a href="#"><span class="icon-linkedin"></span></a></li>
+                <li><a href="#"><span class="icon-instagram"></span></a></li>
+              </ul>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="site-section bg-light" id="section-services">
+      <div class="container">
+        <div class="row justify-content-center mb-5" data-aos="fade-up">
+          <div class="col-md-7 text-center border-primary">
+            <h2 class="mb-0 text-primary">Highlights of the Attendance System</h2>
+            <!-- <p class="color-black-opacity-5">Lorem ipsum dolor sit amet.</p> -->
+          </div>
+        </div>
+        <div class="row align-items-stretch">
+          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up">
+            <div class="unit-4 d-flex">
+              <div class="unit-4-icon mr-4"><span class="text-primary flaticon-plane"></span></div>
+              <div>
+                <h3>Real-time Face Recognition</h3>
+                <p>The system marks the attendance without any direct intercation with the student.</p>
+                <!-- <p><a href="#">Learn More</a></p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="unit-4 d-flex">
+              <div class="unit-4-icon mr-4"><span class="text-primary flaticon-boat-ship"></span></div>
+              <div>
+                <h3>Cloud Based System</h3>
+                <p>The processing and storage overgead is delegated to the cloud platform to reduce load on local system.</p>
+                <!-- <p><a href="#">Learn More</a></p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="unit-4 d-flex">
+              <div class="unit-4-icon mr-4"><span class="text-primary flaticon-truck"></span></div>
+              <div>
+                <h3>Anti-Spoofing</h3>
+                <p>The system is well equipped with anti-spoofing mechanisms.</p>
+                <!-- <p><a href="#">Learn More</a></p> -->
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="unit-4 d-flex">
+              <div class="unit-4-icon mr-4"><span class="text-primary flaticon-warehouse"></span></div>
+              <div>
+                <h3>Fast and Accurate</h3>
+                <p>The cognitive services makes the system fast,reliable and accurate.</p>
+                <!-- <p><a href="#">Learn More</a></p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="unit-4 d-flex">
+              <div class="unit-4-icon mr-4"><span class="text-primary flaticon-wooden"></span></div>
+              <div>
+                <h3>Access to Database from Anywhere</h3>
+                <p>Authorised person can access the database from anywhere at anytime.</p>
+                <!-- <p><a href="#">Learn More</a></p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="500">
+            <div class="unit-4 d-flex">
+              <div class="unit-4-icon mr-4"><span class="text-primary flaticon-worldwide"></span></div>
+              <div>
+                <h3>Works in Uncontrolled Environment</h3>
+                <p>Student does have to interact one on one with the system.</p>
+                <!-- <p><a href="#">Learn More</a></p> -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="site-section bg-light" id="section-contact">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-md-7 text-center border-primary">
+            <h2 class="font-weight-light text-primary">Contact Us</h2>
+            <!-- <p class="color-black-opacity-5">See Our Daily News &amp; Updates</p> -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7 mb-5">
+
+
+
+            <form action="#" class="p-5 bg-white">
+
+
+              <div class="row form-group">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label class="text-black" for="fname">First Name</label>
+                  <input type="text" id="fname" class="form-control">
+                </div>
+                <div class="col-md-6">
+                  <label class="text-black" for="lname">Last Name</label>
+                  <input type="text" id="lname" class="form-control">
+                </div>
+              </div>
+
+              <div class="row form-group">
+
+                <div class="col-md-12">
+                  <label class="text-black" for="email">Email</label>
+                  <input type="email" id="email" class="form-control">
+                </div>
+              </div>
+
+              <div class="row form-group">
+
+                <div class="col-md-12">
+                  <label class="text-black" for="subject">Subject</label>
+                  <input type="subject" id="subject" class="form-control">
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-md-12">
+                  <label class="text-black" for="message">Message</label>
+                  <textarea name="message" id="message" cols="30" rows="7" class="form-control"></textarea>
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-md-12">
+                  <input type="submit" value="Send Message" class="btn btn-primary py-2 px-4 text-white">
+                </div>
+              </div>
+
+
+            </form>
+          </div>
+          <div class="col-md-5">
+
+            <div class="p-4 mb-3 bg-white">
+              <p class="mb-0 font-weight-bold">Address</p>
+              <p class="mb-4">Atal Bihari Vajpayee<br/>Indian Institute of Information Technology and Management<br/>Morena Link Road<br/>Gwalior, Madhya Pradesh, India, 474015</p>
+
+              <p class="mb-0 font-weight-bold">Phone</p>
+              <p class="mb-4"><a href="#">+917523922057<br>+918427776105</a></p>
+
+              <p class="mb-0 font-weight-bold">Email Address</p>
+              <p class="mb-0"><a href="#">info@iiitm.ac.in</a></p>
+
+            </div>
+
+            <div class="p-4 mb-3 bg-white">
+              <h3 class="h5 text-black mb-3">More Info</h3>
+              <p>This is a real-time attendance recording system based on cloud platform..</p>
+              <p><a href="#" class="btn btn-primary px-4 py-2 text-white">Learn More</a></p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        
+        <a class="btn btn-primary py-3 px-5 text-white" href="{{ url_for('courses') }}">WCT</a>
+          <a class="btn btn-primary py-3 px-5 text-white" href="{{ url_for('courses1') }}">MS</a>
+            <a class="btn btn-primary py-3 px-5 text-white" href="{{ url_for('courses2') }}">ISS</a>
+              <a class="btn btn-primary py-3 px-5 text-white" href="{{ url_for('courses3') }}">AI</a>
+                <a class="btn btn-primary py-3 px-5 text-white" href="{{ url_for('courses4') }}">ECOSD</a>
+        <a class="btn btn-primary py-3 px-5 text-white" href="{{ url_for('courses5') }}">FL</a>
+      </div>
+    
+    </div>
+    
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-5 mr-auto">
+                <h2 class="footer-heading mb-4">About Us</h2>
+                <p>This system is developed .</p>
+              </div>
+
+              <div class="col-md-3">
+                <h2 class="footer-heading mb-4">Quick Links</h2>
+                <ul class="list-unstyled">
+                  <li><a href="#">About Us</a></li>
+                  <li><a href="#">Services</a></li>
+                  <li><a href="#">Testimonials</a></li>
+                  <li><a href="#">Contact Us</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3">
+                <h2 class="footer-heading mb-4">Follow Us</h2>
+                <a href="#" class="pl-0 pr-3"><span class="icon-facebook"></span></a>
+                <a href="#" class="pl-3 pr-3"><span class="icon-twitter"></span></a>
+                <a href="#" class="pl-3 pr-3"><span class="icon-instagram"></span></a>
+                <a href="#" class="pl-3 pr-3"><span class="icon-linkedin"></span></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <h2 class="footer-heading mb-4">Subscribe Newsletter</h2>
+            <form action="#" method="post">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control border-secondary text-white bg-transparent" placeholder="Enter Email" aria-label="Enter Email" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-primary text-white" type="button" id="button-addon2">Send</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row pt-5 mt-5 text-center">
+          <div class="col-md-12">
+            <div class="border-top pt-5">
+              <p>
+              <small class="block">&copy; <script>document.write(new Date().getFullYear());</script> Attendance System. All Rights Reserved. <br> Designed &amp; Developed by Abhishek Arya and Daksh Berry</small>
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </footer>
+  <!-- </div> -->
+
+  <script src="/static/js/jquery-3.3.1.min.js"></script>
+  <script src="/static/js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="/static/js/jquery-ui.js"></script>
+  <script src="/static/js/jquery.easing.1.3.js"></script>
+  <script src="/static/js/popper.min.js"></script>
+  <!-- <script src="/static/js/bootstrap.min.js"></script> -->
+  <script src="/static/js/owl.carousel.min.js"></script>
+  <script src="/static/js/jquery.stellar.min.js"></script>
+  <script src="/static/js/jquery.countdown.min.js"></script>
+  <script src="/static/js/jquery.magnific-popup.min.js"></script>
+  <script src="/static/js/bootstrap-datepicker.min.js"></script>
+  <script src="/static/js/aos.js"></script>
+
+  <script src="/static/js/main.js"></script>
+  <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+    
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+    
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    
+    // When the user clicks the button, open the modal 
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+    
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+    </script>
+    
+
+  </body>
+</html>
+{% endblock %}
