@@ -143,7 +143,7 @@ class FaceID(object):
         params = urllib.parse.urlencode({})
 
         try:
-            self.conn.request("POST","face/v1.0/persongroups/" + targetGroup + "/train?%s" % params, "{body}", self.headers)
+            self.conn.request("POST","/face/v1.0/persongroups/" + targetGroup + "/train?%s" % params, "{body}", self.headers)
             response = self.conn.getresponse()
             print(response)
             data = response.read()
@@ -240,6 +240,7 @@ class FaceID(object):
                         print(detectedFaceId)
                         known = 0
                         person = self.identifyFace(detectedFaceId, wing)
+                        print(person)
                         randperson = self.identifyFace(detectedFaceId, "knownmembers")
                         if not person :
                             if randperson :
@@ -347,14 +348,14 @@ class FaceID(object):
         return 1
 
     def main(self, flag, wg):
-        self.TrainInit() # Init only once
+        # self.TrainInit() # Init only once
         # self.DatabaseInit() # Also init only once
         # self.listPersonsInGroup("wingc")
 
         print('--------------------------------')
         # self.fetchSQLData()
-        # if wg=="winga":
-        #     self.takeEntries("winga",flag)
+        if wg=="winga":
+            self.takeEntries("winga",flag)
         # elif wg=="wingb":
         #     self.takeEntries("wingb",flag)
         # elif wg=="wingc":
