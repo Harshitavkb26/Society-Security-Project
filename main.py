@@ -132,7 +132,7 @@ class FaceID(object):
             self.conn.request("GET","/face/v1.0/persongroups/" + targetGroup + "/persons?%s" % params, "{body}", self.headers)
             response = self.conn.getresponse()
             data = response.read()
-            print("data retruned succesfully.")
+            print(data)
             return data
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
@@ -145,7 +145,9 @@ class FaceID(object):
         try:
             self.conn.request("POST","face/v1.0/persongroups/" + targetGroup + "/train?%s" % params, "{body}", self.headers)
             response = self.conn.getresponse()
+            print(response)
             data = response.read()
+            print(data)
             print("Group Trained")
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
@@ -157,7 +159,7 @@ class FaceID(object):
          detectHeaders = {'Content-Type': 'application/octet-stream',
                    'Ocp-Apim-Subscription-Key': '88c2b7ffcd274fa7ab53b70ec20f7b54'}
 
-         url = 'https://buildfaceapi.cognitiveservices.azure.com/face/v1.0/detect'
+         url = 'https://buildfaceapi.cognitiveservices.azure.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false'
     
          params = urllib.parse.urlencode({
             'returnFaceId': 'true',
@@ -167,6 +169,7 @@ class FaceID(object):
          try:
         
             response = requests.post(url, headers=detectHeaders, data=imgData)
+            
             return response.json()[0]["faceId"]
          except IndexError:
             print("NO FACE DETECTED")
@@ -186,7 +189,11 @@ class FaceID(object):
         try:
             self.conn.request("POST", "/face/v1.0/identify?%s" % params, json.dumps(body), self.headers)
             response = self.conn.getresponse()
+            print(response)
+            
+        
             data = json.loads(response.read())
+            print(data)
 
             if not data or not data[0]["candidates"]:
                 raise IndexError()
@@ -220,15 +227,17 @@ class FaceID(object):
 
                 # img = cv2.resize(img, (1000, 500))
                 cv2.imshow('frame', img)
-                imgData = cv2.imencode(".jpg",img)[1].tostring()
+                imgData = cv2.imencode(".jpg",img)[1].tobytes()
+               
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-                i=i+1;
-                if i % 10000 == 0:
+                i=i+1
+                if i % 100 == 0:
 
                     detectedFaceId = self.detectFace(imgData)
                     if detectedFaceId != -1:
+                        print(detectedFaceId)
                         known = 0
                         person = self.identifyFace(detectedFaceId, wing)
                         randperson = self.identifyFace(detectedFaceId, "knownmembers")
@@ -302,7 +311,7 @@ class FaceID(object):
         # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
         # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
 
-        # self.trainGroup("winga")
+        self.trainGroup("winga")
         # self.trainGroup("wingb")
         # self.trainGroup("wingc")
         # self.trainGroup("knownMembers")
@@ -338,13 +347,14 @@ class FaceID(object):
         return 1
 
     def main(self, flag, wg):
-        # self.TrainInit() # Init only once
+        self.TrainInit() # Init only once
         # self.DatabaseInit() # Also init only once
+        # self.listPersonsInGroup("wingc")
 
         print('--------------------------------')
         # self.fetchSQLData()
-        if wg=="winga":
-            self.takeEntries("winga",flag)
+        # if wg=="winga":
+        #     self.takeEntries("winga",flag)
         # elif wg=="wingb":
         #     self.takeEntries("wingb",flag)
         # elif wg=="wingc":

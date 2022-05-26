@@ -134,8 +134,8 @@ def list():
     if request.method == "GET":
         wingsList = securityApp.getwingsJson()
         wingsListOfDicts = []
-        for course in wingsList:
-            wingsListOfDicts.append(json.loads(course))
+        # for course in wingsList:
+        #     wingsListOfDicts.append(json.loads(course))
         return render_template("list.html", wingsList=wingsListOfDicts)
 
     # POST request
