@@ -189,11 +189,11 @@ class FaceID(object):
         try:
             self.conn.request("POST", "/face/v1.0/identify?%s" % params, json.dumps(body), self.headers)
             response = self.conn.getresponse()
-            print(response)
+            # print(response)
             
         
             data = json.loads(response.read())
-            print(data)
+            # print(data)
 
             if not data or not data[0]["candidates"]:
                 raise IndexError()
@@ -240,7 +240,7 @@ class FaceID(object):
                         print(detectedFaceId)
                         known = 0
                         person = self.identifyFace(detectedFaceId, wing)
-                        print(person)
+                        # print(person)
                         randperson = self.identifyFace(detectedFaceId, "knownmembers")
                         if not person :
                             if randperson :
@@ -263,7 +263,7 @@ class FaceID(object):
                             cursor.execute(checkPresentQuery)
                             data = cursor.fetchone()
                             print('Adding person into wing entry table')
-                            addQuery = "INSERT INTO wing'" + wing + "' (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
+                            addQuery = "INSERT INTO'" + wing + "' (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
 
             self.cam.release()
             cv2.destroyAllWindows()
@@ -290,13 +290,14 @@ class FaceID(object):
         #  self.createGroup("winga","Wing A")
         #  self.createGroup("wingb","Wing B")
         #  self.createGroup("wingc","Wing C")
-        #  self.createGroup("knownmembers","Routine People")
+        # self.createGroup("knownmembers","Routine People")
 
         # self.addPerson("HarshitaVerma_1","winga")
         # self.addPerson("NikitaVerma_2","wingb")
         # self.addPerson("DakshBerry_1","wingc")
+        self.addPerson("AbhishekArya_Milkman","knownmembers")
 
-        #  self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/1.jpg?raw=true")
+        # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/1.jpg?raw=true")
         # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/2.jpg?raw=true")
         # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/3.jpg?raw=true")
         # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/4.jpg?raw=true")
@@ -311,12 +312,22 @@ class FaceID(object):
         # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
         # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
         # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/1.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/2.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/3.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/4.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/5.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/6.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/7.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/8.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/9.JPG")
+        
 
-        self.trainGroup("winga")
+        # self.trainGroup("winga")
         # self.trainGroup("wingb")
         # self.trainGroup("wingc")
-        # self.trainGroup("knownMembers")
-        # time.sleep(2) # Give a second to train database
+        self.trainGroup("knownmembers")
+        time.sleep(2) # Give a second to train database
 
 
         # listOfPersons = json.loads(self.listPersonsInGroup("A")
@@ -361,7 +372,7 @@ class FaceID(object):
         # elif wg=="wingc":
         #     self.takeEntries("wingc",flag)
         # elif wg=="knownmembers":
-        #     self.takeEntries("knownMembers",flag)
+        #     self.takeEntries("knownmembers",flag)
 
         # else:
         #     self.cam.release()
