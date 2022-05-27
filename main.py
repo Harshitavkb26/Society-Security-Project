@@ -225,7 +225,7 @@ class FaceID(object):
                 
                 ret, img = self.cam.read()
 
-                # img = cv2.resize(img, (1000, 500))
+                img = cv2.resize(img, (1000, 500))
                 cv2.imshow('frame', img)
                 imgData = cv2.imencode(".jpg",img)[1].tobytes()
                
@@ -249,21 +249,32 @@ class FaceID(object):
                         if person :
                             known = 2
                             person_name , person_flatnumber = person.split("_")
+                            
                         
                         if known == 1 :
                             checkQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + randperson_desd + "' AND name = '" + randperson_name  + "' AND wing = '" + 'knownMembers' + "');"
                             cursor.execute(checkQuery)
                             data = cursor.fetchone()
                             print('Adding person into known members entry table')
-                            addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber, timestamp) VALUES ('" + randperson_desd + "', '" + randperson_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
+                            addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber, timestamp) VALUES ('" + randperson_desd + "', '" + randperson_name + "', '" + data[3] + "', '" + '123' + "');"
 
 
                         if known == 2 :
                             checkPresentQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person_flatnumber + "' AND name = '" + person_name  + "' AND wing = '" + wing + "');"
                             cursor.execute(checkPresentQuery)
                             data = cursor.fetchone()
+                            print(data[3])
+                            print(type(person_flatnumber))
                             print('Adding person into wing entry table')
-                            addQuery = "INSERT INTO'" + wing + "' (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data["contactnumber"] + "', '" + '123' + "');"
+                            if wing =="winga":
+                                addQuery = "INSERT INTO wingA (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "', '" + '123' + "');"
+                            elif wing =="wingb":
+                                addQuery = "INSERT INTO wingB (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "', '" + '123' + "');"
+                            elif wing=="wingc" :
+                                addQuery = "INSERT INTO wingC (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "', '" + '123' + "');"
+                            cursor.execute(addQuery)
+                            cursor.commit()
+                            
 
             self.cam.release()
             cv2.destroyAllWindows()
@@ -295,7 +306,7 @@ class FaceID(object):
         # self.addPerson("HarshitaVerma_1","winga")
         # self.addPerson("NikitaVerma_2","wingb")
         # self.addPerson("DakshBerry_1","wingc")
-        self.addPerson("AbhishekArya_Milkman","knownmembers")
+        # self.addPerson("AbhishekArya_Milkman","knownmembers")
 
         # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/1.jpg?raw=true")
         # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/2.jpg?raw=true")
@@ -312,22 +323,22 @@ class FaceID(object):
         # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
         # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
         # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/1.JPG")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/2.JPG")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/3.JPG")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/4.JPG")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/5.JPG")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/6.JPG")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/7.JPG")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/8.JPG")
-        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/9.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/1.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/2.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/3.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/4.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/5.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/6.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/7.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/8.JPG")
+        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/9.JPG")
         
 
         # self.trainGroup("winga")
         # self.trainGroup("wingb")
         # self.trainGroup("wingc")
-        self.trainGroup("knownmembers")
-        time.sleep(2) # Give a second to train database
+        # self.trainGroup("knownmembers")
+        # time.sleep(2) # Give a second to train database
 
 
         # listOfPersons = json.loads(self.listPersonsInGroup("A")
@@ -367,15 +378,15 @@ class FaceID(object):
         # self.fetchSQLData()
         if wg=="winga":
             self.takeEntries("winga",flag)
-        # elif wg=="wingb":
-        #     self.takeEntries("wingb",flag)
-        # elif wg=="wingc":
-        #     self.takeEntries("wingc",flag)
-        # elif wg=="knownmembers":
-        #     self.takeEntries("knownmembers",flag)
+        elif wg=="wingb":
+            self.takeEntries("wingb",flag)
+        elif wg=="wingc":
+            self.takeEntries("wingc",flag)
+        elif wg=="knownmembers":
+            self.takeEntries("knownmembers",flag)
 
-        # else:
-        #     self.cam.release()
+        else:
+            self.cam.release()
 
 if __name__ == "__main__":
     app = FaceID()
