@@ -4,6 +4,7 @@ import importlib as il
 import json
 from fpdf import FPDF
 import pdfkit
+import cv2
 from datetime import datetime
 
 app = Flask(__name__)
@@ -36,7 +37,7 @@ def stops():
     # elif sub==6:
     #     securityApp.wipeAttendanceLog("6")
     #     securityApp.main(0,sub)
-    securityApp.main(0,wg)
+    securityApp.main(wg,0)
     il.reload(pro)
     return render_template("index.html")
 

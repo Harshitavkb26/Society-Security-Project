@@ -28,9 +28,8 @@ class FaceID(object):
     conn = http.client.HTTPSConnection('buildfaceapi.cognitiveservices.azure.com')
     # cam = cv2.CascadeClassifier('rtsp://admin:admin@123@192.168.43.200/1')
     #may be have to change the values
-    cam = cv2.VideoCapture(0)
+    # cam = cv2.VideoCapture(1)
     # cam.set(cv2.CAP_PROP_FPS, 0.1)
-
     personScanned = ''
 
     headers = {
@@ -63,7 +62,7 @@ class FaceID(object):
             self.conn.request("PUT","/face/v1.0/persongroups/"+ groupId +"?%s" % params, json.dumps(body), self.headers)
             response = self.conn.getresponse()
             data = response.read()
-            print(data)
+            # print(data)
             print("Group Created")
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
@@ -80,7 +79,7 @@ class FaceID(object):
             self.conn.request("POST", "/face/v1.0/persongroups/" + targetGroup + "/persons?%s" % params, json.dumps(body), self.headers)
             response = self.conn.getresponse()
             data = response.read()
-            print(data)
+            # print(data)
             print("Person Added: ", name)
         
         except Exception as e:
@@ -93,19 +92,13 @@ class FaceID(object):
         listOfPersons = json.loads(self.listPersonsInGroup(targetGroup))
         personId = ""
         for person in listOfPersons:
-            print(person)
+            # print(person)
             if person["name"] == targetName :
                
                 personId = person["personId"]
-                print("PersonId added")
+                # print("PersonId added")
                 break
 
-        # for x,y in listOfPersons.items():
-        #     if x == name and y == targetName :
-        #             if x == personId:
-        #                 personId = y
-        #                 print("ID returned")
-        #             break
         
         params = urllib.parse.urlencode({})
 
@@ -132,7 +125,7 @@ class FaceID(object):
             self.conn.request("GET","/face/v1.0/persongroups/" + targetGroup + "/persons?%s" % params, "{body}", self.headers)
             response = self.conn.getresponse()
             data = response.read()
-            print(data)
+            # print(data)
             return data
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
@@ -145,9 +138,7 @@ class FaceID(object):
         try:
             self.conn.request("POST","/face/v1.0/persongroups/" + targetGroup + "/train?%s" % params, "{body}", self.headers)
             response = self.conn.getresponse()
-            print(response)
             data = response.read()
-            print(data)
             print("Group Trained")
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
@@ -169,7 +160,6 @@ class FaceID(object):
          try:
         
             response = requests.post(url, headers=detectHeaders, data=imgData)
-            
             return response.json()[0]["faceId"]
          except IndexError:
             print("NO FACE DETECTED")
@@ -179,6 +169,7 @@ class FaceID(object):
 
     # To identify face returns name of the person 
     def identifyFace(self, faceId, targetGroup): 
+
         params = urllib.parse.urlencode({})
 
         body = {
@@ -191,7 +182,7 @@ class FaceID(object):
             response = self.conn.getresponse()
             # print(response)
             
-        
+
             data = json.loads(response.read())
             # print(data)
 
@@ -220,12 +211,12 @@ class FaceID(object):
 
         i=0
         try:
-            # cam = cv2.VideoCapture(1000)
+            cam = cv2.VideoCapture(1)
             while True:
                 
-                ret, img = self.cam.read()
+                ret, img = cam.read()
 
-                img = cv2.resize(img, (1000, 500))
+                # img = cv2.resize(img, (1000, 500))
                 cv2.imshow('frame', img)
                 imgData = cv2.imencode(".jpg",img)[1].tobytes()
                
@@ -237,11 +228,13 @@ class FaceID(object):
 
                     detectedFaceId = self.detectFace(imgData)
                     if detectedFaceId != -1:
-                        print(detectedFaceId)
+                        # print(detectedFaceId)
                         known = 0
+                        
                         person = self.identifyFace(detectedFaceId, wing)
                         # print(person)
-                        randperson = self.identifyFace(detectedFaceId, "knownmembers")
+                        if not person:
+                            randperson = self.identifyFace(detectedFaceId, "knownmembers")
                         if not person :
                             if randperson :
                                 known = 1
@@ -263,8 +256,6 @@ class FaceID(object):
                             checkPresentQuery = "SELECT * FROM societymembers WHERE (flatnumber = '" + person_flatnumber + "' AND name = '" + person_name  + "' AND wing = '" + wing + "');"
                             cursor.execute(checkPresentQuery)
                             data = cursor.fetchone()
-                            print(data[3])
-                            print(type(person_flatnumber))
                             print('Adding person into wing entry table')
                             if wing =="winga":
                                 addQuery = "INSERT INTO wingA (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "', '" + '123' + "');"
@@ -276,8 +267,10 @@ class FaceID(object):
                             cursor.commit()
                             
 
-            self.cam.release()
-            cv2.destroyAllWindows()
+            if flag==0 :
+
+                cam.release()
+                cv2.destroyAllWindows()
         except KeyboardInterrupt:
             self.conn.close()
         print("takeEntries runs successfully")
@@ -298,64 +291,48 @@ class FaceID(object):
 
     def TrainInit(self):
 
-        #  self.createGroup("winga","Wing A")
-        #  self.createGroup("wingb","Wing B")
-        #  self.createGroup("wingc","Wing C")
-        # self.createGroup("knownmembers","Routine People")
+        self.createGroup("winga","Wing A")
+        self.createGroup("wingb","Wing B")
+        self.createGroup("wingc","Wing C")
+        self.createGroup("knownmembers","Routine People")
 
-        # self.addPerson("HarshitaVerma_1","winga")
-        # self.addPerson("NikitaVerma_2","wingb")
-        # self.addPerson("DakshBerry_1","wingc")
-        # self.addPerson("AbhishekArya_Milkman","knownmembers")
+        self.addPerson("HarshitaVerma_1","winga")
+        self.addPerson("NikitaVerma_2","wingb")
+        self.addPerson("DakshBerry_1","wingc")
+        self.addPerson("AbhishekArya_Milkman","knownmembers")
 
-        # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/1.jpg?raw=true")
-        # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/2.jpg?raw=true")
-        # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/3.jpg?raw=true")
-        # self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/4.jpg?raw=true")
-        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h2.jpg?raw=true")
-        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h3.jpg?raw=true")
-        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h4.jpg?raw=true")
-        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h5.jpg?raw=true")
-        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h6.jpg?raw=true")
-        # self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h7.jpg?raw=true")
-        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n1.jpg?raw=true")
-        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n2.jpg?raw=true")
-        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
-        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
-        # self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/1.JPG")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/2.JPG")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/3.JPG")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/4.JPG")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/5.JPG")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/6.JPG")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/7.JPG")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/8.JPG")
-        # self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/9.JPG")
+        self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/1.jpg?raw=true")
+        self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/2.jpg?raw=true")
+        self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/3.jpg?raw=true")
+        self.addFace("DakshBerry_1","wingc","https://github.com/dakshberry121/temp-pics/blob/master/4.jpg?raw=true")
+        self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h2.jpg?raw=true")
+        self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h3.jpg?raw=true")
+        self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h4.jpg?raw=true")
+        self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h5.jpg?raw=true")
+        self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h6.jpg?raw=true")
+        self.addFace("HarshitaVerma_1","winga","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/harshita/h7.jpg?raw=true")
+        self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n1.jpg?raw=true")
+        self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n2.jpg?raw=true")
+        self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n3.jpg?raw=true")
+        self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n4.jpg?raw=true")
+        self.addFace("NikitaVerma_2","wingb","https://github.com/Harshitavkb26/Society-Security-Project/blob/main/pics/Nikita/n5.jpg?raw=true")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/1.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/2.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/3.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/4.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/5.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/6.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/7.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/8.JPG")
+        self.addFace("AbhishekArya_Milkman", "knownmembers", "https://raw.githubusercontent.com/abhishek4s/pics/master/9.JPG")
         
 
-        # self.trainGroup("winga")
-        # self.trainGroup("wingb")
-        # self.trainGroup("wingc")
-        # self.trainGroup("knownmembers")
-        # time.sleep(2) # Give a second to train database
+        self.trainGroup("winga")
+        self.trainGroup("wingb")
+        self.trainGroup("wingc")
+        self.trainGroup("knownmembers")
+        time.sleep(2) # Give a second to train database
 
-
-        # listOfPersons = json.loads(self.listPersonsInGroup("A")
-        # personId = ""
-        # for person in listOfPersons:
-        #     if person["name"] == "harshita" and person["flatnumber"] == "1" :
-        #         personId = person["personId"]
-        #         print("Face added")
-        #         break
-
-        # for x,y in listOfPersons.items():
-        #     if x == "name" and y == "harshita" :
-        #         if x == "flatnumber" and y == "1" :
-        #             if x == personId:
-        #                 personId = y
-        #                 print("ID returned")
-        #             break
         print("Traininit runs successfully")
         
 
@@ -372,25 +349,25 @@ class FaceID(object):
     def main(self, flag, wg):
         # self.TrainInit() # Init only once
         # self.DatabaseInit() # Also init only once
-        # self.listPersonsInGroup("wingc")
 
         print('--------------------------------')
         # self.fetchSQLData()
-        if wg=="winga":
-            self.takeEntries("winga",flag)
-        elif wg=="wingb":
-            self.takeEntries("wingb",flag)
-        elif wg=="wingc":
-            self.takeEntries("wingc",flag)
-        elif wg=="knownmembers":
-            self.takeEntries("knownmembers",flag)
+        if flag ==1 :
+            if wg=="winga":
+                self.takeEntries("winga",flag)
+            elif wg=="wingb":
+                self.takeEntries("wingb",flag)
+            elif wg=="wingc":
+                self.takeEntries("wingc",flag)
+            elif wg=="knownmembers":
+                self.takeEntries("knownmembers",flag)
 
-        else:
-            self.cam.release()
+        # else:
+        #     # self.cam.release()
 
 if __name__ == "__main__":
     app = FaceID()
-    #flag=1
+    # flag=1
 
     app.main(flag,wg)  
     #app.main() 
