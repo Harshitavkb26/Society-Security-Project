@@ -37,7 +37,7 @@ def stops():
     # elif sub==6:
     #     securityApp.wipeAttendanceLog("6")
     #     securityApp.main(0,sub)
-    securityApp.main(wg,0)
+    securityApp.main(0,wg)
     il.reload(pro)
     return render_template("index.html")
 

@@ -4,6 +4,10 @@ import cv2
 from httplib2 import Response
 import importlib as il
 import mysql.connector
+import os
+
+duration = 1  # seconds
+freq = 440  # Hz
 flag=1
 flag1=True
 wg="winga"
@@ -38,12 +42,20 @@ class FaceID(object):
         'Ocp-Apim-Subscription-Key': 'c1e050016f4241a28aefb095318529e8',
     }
 
-    def fetchSQLData(self):
+    def fetchSQLData(self,wg):
         #mydb = mysql.connector.connect(server='harshita.database.windows.net',username= 'Harshi',password= 'Anjali123',database='society')
 
         #mycursor = mydb.cursor()
+        if wg=="winga":
 
-        cursor.execute("SELECT * FROM [dbo].[societymembers]")
+            cursor.execute("SELECT * FROM [dbo].[wingA]")
+        elif wg=="wingb":
+            cursor.execute("SELECT * FROM [dbo].[wingB]")
+        elif wg=="wingc":
+            cursor.execute("SELECT * FROM [dbo].[wingC]") 
+        else:
+            cursor.execute("SELECT * FROM knownmembers")   
+
         result = cursor.fetchall()
 
         for i in result:
@@ -81,6 +93,7 @@ class FaceID(object):
             data = response.read()
             # print(data)
             print("Person Added: ", name)
+            
         
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno,e.strerror))
@@ -163,6 +176,9 @@ class FaceID(object):
             return response.json()[0]["faceId"]
          except IndexError:
             print("NO FACE DETECTED")
+            os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
+            os.system('spd-say "no face detected"')
+
             return -1
          except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
@@ -194,10 +210,13 @@ class FaceID(object):
             for person in listOfPersons:
                 if person["personId"] == candidatePersonId:
                     print("PERSON IDENTIFIED: " + person["name"])
+                    
                     return person["name"]
 
         except IndexError:
             print("***** Idk something went wrong *****")
+            os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
+            os.system('spd-say "stranger"')
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror)) 
 
@@ -211,7 +230,10 @@ class FaceID(object):
 
         i=0
         try:
-            cam = cv2.VideoCapture(1)
+            cam = cv2.VideoCapture(0)
+            # if flag == 0:
+            #     cam.release()
+            #     cv2.destroyAllWindows()
             while True:
                 
                 ret, img = cam.read()
@@ -235,7 +257,7 @@ class FaceID(object):
                         # print(person)
                         if not person:
                             randperson = self.identifyFace(detectedFaceId, "knownmembers")
-                        if not person :
+                        # if not person :
                             if randperson :
                                 known = 1
                                 randperson_name , randperson_desd = randperson.split("_")
@@ -249,7 +271,9 @@ class FaceID(object):
                             cursor.execute(checkQuery)
                             data = cursor.fetchone()
                             print('Adding person into known members entry table')
-                            addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber, timestamp) VALUES ('" + randperson_desd + "', '" + randperson_name + "', '" + data[3] + "', '" + '123' + "');"
+                            addQuery = "INSERT INTO knownmembers (flatnumber, name , contactnumber) VALUES ('" + randperson_desd + "', '" + randperson_name + "', '" + data[3] + "');"
+                            os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
+                            os.system('spd-say "person identified"')
 
 
                         if known == 2 :
@@ -258,13 +282,15 @@ class FaceID(object):
                             data = cursor.fetchone()
                             print('Adding person into wing entry table')
                             if wing =="winga":
-                                addQuery = "INSERT INTO wingA (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "', '" + '123' + "');"
+                                addQuery = "INSERT INTO wingA (flatnumber, name , contactnumber) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "');"
                             elif wing =="wingb":
-                                addQuery = "INSERT INTO wingB (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "', '" + '123' + "');"
+                                addQuery = "INSERT INTO wingB (flatnumber, name , contactnumber) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "');"
                             elif wing=="wingc" :
-                                addQuery = "INSERT INTO wingC (flatnumber, name , contactnumber, timestamp) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "', '" + '123' + "');"
+                                addQuery = "INSERT INTO wingC (flatnumber, name , contactnumber) VALUES ('" + person_flatnumber + "', '" + person_name + "', '" + data[3] + "');"
                             cursor.execute(addQuery)
                             cursor.commit()
+                            os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
+                            os.system('spd-say "person identified"')
                             
 
             if flag==0 :
@@ -351,7 +377,7 @@ class FaceID(object):
         # self.DatabaseInit() # Also init only once
 
         print('--------------------------------')
-        # self.fetchSQLData()
+        # self.fetchSQLData(wg)
         if flag ==1 :
             if wg=="winga":
                 self.takeEntries("winga",flag)
@@ -359,11 +385,11 @@ class FaceID(object):
                 self.takeEntries("wingb",flag)
             elif wg=="wingc":
                 self.takeEntries("wingc",flag)
-            elif wg=="knownmembers":
-                self.takeEntries("knownmembers",flag)
+            # elif wg=="knownmembers":
+            #     self.takeEntries("knownmembers",flag)
 
-        # else:
-        #     # self.cam.release()
+        else:
+            self.cam.release()
 
 if __name__ == "__main__":
     app = FaceID()
