@@ -58,8 +58,9 @@ class FaceID(object):
 
         result = cursor.fetchall()
 
-        for i in result:
-            print(i)
+        # for i in result:
+        #     print(i)
+        # print("returned from",wg)
         return result
 
     def createGroup(self, groupId, groupName):
@@ -377,7 +378,7 @@ class FaceID(object):
         # self.DatabaseInit() # Also init only once
 
         print('--------------------------------')
-        # self.fetchSQLData(wg)
+        # self.fetchSQLData()
         if flag ==1 :
             if wg=="winga":
                 self.takeEntries("winga",flag)

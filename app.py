@@ -17,29 +17,29 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/stops", methods=["GET", "POST"])
-def stops():
-    # if sub==1:
-    #     securityApp.wipeAttendanceLog("1")
-    #     securityApp.main(0,sub)
-    # elif sub==2:
-    #     securityApp.wipeAttendanceLog("2")
-    #     securityApp.main(0,sub)
-    # elif sub==3:
-    #     securityApp.wipeAttendanceLog("3")
-    #     securityApp.main(0,sub)
-    # elif sub==4:
-    #     securityApp.wipeAttendanceLog("4")
-    #     securityApp.main(0,sub)
-    # elif sub==5:
-    #     securityApp.wipeAttendanceLog("5")
-    #     securityApp.main(0,sub)
-    # elif sub==6:
-    #     securityApp.wipeAttendanceLog("6")
-    #     securityApp.main(0,sub)
-    securityApp.main(0,wg)
-    il.reload(pro)
-    return render_template("index.html")
+# @app.route("/stops", methods=["GET", "POST"])
+# def stops():
+#     # if sub==1:
+#     #     securityApp.wipeAttendanceLog("1")
+#     #     securityApp.main(0,sub)
+#     # elif sub==2:
+#     #     securityApp.wipeAttendanceLog("2")
+#     #     securityApp.main(0,sub)
+#     # elif sub==3:
+#     #     securityApp.wipeAttendanceLog("3")
+#     #     securityApp.main(0,sub)
+#     # elif sub==4:
+#     #     securityApp.wipeAttendanceLog("4")
+#     #     securityApp.main(0,sub)
+#     # elif sub==5:
+#     #     securityApp.wipeAttendanceLog("5")
+#     #     securityApp.main(0,sub)
+#     # elif sub==6:
+#     #     securityApp.wipeAttendanceLog("6")
+#     #     securityApp.main(0,sub)
+#     securityApp.main(0,wg)
+#     il.reload(pro)
+#     return render_template("index.html")
 
 # @app.route("/createPDF", methods=["GET", "POST"])
 # def createPDF():
@@ -130,23 +130,23 @@ def wingsC():
 #     securityApp.wipeAttendanceLog("2")
 #     securityApp.main(1,6)
 
-@app.route("/list", methods=["GET", "POST"])
-def list():
-    if request.method == "GET":
-        wingsList = securityApp.getwingsJson()
-        wingsListOfDicts = []
-        # for course in wingsList:
-        #     wingsListOfDicts.append(json.loads(course))
-        return render_template("list.html", wingsList=wingsListOfDicts)
+# @app.route("/list", methods=["GET", "POST"])
+# def list():
+#     if request.method == "GET":
+#         wingsList = securityApp.getwingsJson()
+#         wingsListOfDicts = []
+#         # for course in wingsList:
+#         #     wingsListOfDicts.append(json.loads(course))
+#         return render_template("list.html", wingsList=wingsListOfDicts)
 
-    # POST request
-    else:
-        return redirect("/list")
+#     # POST request
+#     else:
+#         return redirect("/list")
 
 
 @app.route("/createPDF")
 def generatePDF():
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
     options = {
         'page-size': 'A4',
         'margin-top': '0.75in',
@@ -155,9 +155,17 @@ def generatePDF():
         'margin-left': '0.75in',
     }
 
-    result = securityApp.fetchSQLData()
-    for j in result:
-        fix=j[1]
+    result_wingA = securityApp.fetchSQLData("winga")
+
+    result_wingB = securityApp.fetchSQLData("wingb")
+    print(result_wingB)
+
+    result_wingC = securityApp.fetchSQLData("wingc")
+
+    result_knownmembers = securityApp.fetchSQLData("knownmembers")
+    
+    # for j in result:
+    #     fix=j[1]
     # if sub==1:
     #      securityApp.wipeAttendanceLog("1")
     # #     securityApp.main(0,sub)
@@ -176,373 +184,627 @@ def generatePDF():
     # elif sub==6:
     #      securityApp.wipeAttendanceLog("6")
     #     securityApp.main(0,sub)
-    if fix==1:
-        header = """
-            <html>
-                <head>
-                    <style>
-                        table, th, td {
-                            border: 1px solid black;
-                        }
-                        th, td {
-                            padding-left: 10px;
-                        }
-                        body {
-                            width: 100%;
-                        }
-                        table {
-                            width: 98%;
-                        }
-                        h2   {text-align: center;}
-                    </style>
-                </head>
-                <body>
+    header = """
+        <html>
+            <head>
+                <style>
+                    table, th, td {
+                        border: 1px solid black;
+                    }
+                    th, td {
+                        padding-left: 10px;
+                    }
+                    body {
+                        width: 100%;
+                    }
+                    table {
+                        width: 98%;
+                    }
+                     h2   {text-align: center;}
+                </style>
+            </head>
+             <body>
 
 
-                    <p id="date"></p>
-        <script>
-        document.getElementById("date").innerHTML = Date();
-        </script>
-        <h2>Attendance Report(IPG 2016)</h2>
-        <h2>Wireless and Communication Technlogies (IT01)</h2>
-                        <table>
-                            <tr>
-                                <th>Sr no.</th>
-                                <th>Present students Roll No.</th>
-                            </tr>
-            """
-        footer = """
+                <p id="date"></p>
+    <script>
+    document.getElementById("date").innerHTML = Date();
+    </script>
+    <h2>Society Record</h2>
+     <h2>Wing A</h2>
+                    <table>
+                        <tr>
+                            <th>Sr no.</th>
+                            <th>Flatnumber</th>
+                            <th>Name</th>
+                            <th>Contact Number</th>
+                            <th>Entry Time</th>
 
-                    </table>
-                </body>
-            </html>
-            <footer>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <p>Faculty Coordinator: Prof.Aditya Trivedi</p>
-            </footer>
+                        </tr>
         """
-        body = ''
-        counter=0
-        for i in result:
-            counter=counter+1
-            body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
+    footer = """
 
-        pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
-        return render_template("index.html")
+                </table>
+            </body>
+        </html>
+        <footer>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+           
+        </footer>
+    """
+    body = ''
+    counter=0
+    for i in result_wingA:
+        counter=counter+1
+        body = body + f'<tr><td>{counter}</td><td>{i[0]}</td><td>{i[1]}</td><td>{i[2]}</td><td>{i[3]}</td></tr>'
 
-    elif fix==2:
-        header = """
-            <html>
-                <head>
-                    <style>
-                        table, th, td {
-                            border: 1px solid black;
-                        }
-                        th, td {
-                            padding-left: 10px;
-                        }
-                        body {
-                            width: 100%;
-                        }
-                        table {
-                            width: 98%;
-                        }
-                        h2   {text-align: center;}
-                    </style>
-                </head>
-                <body>
-
-
-                    <p id="date"></p>
-        <script>
-        document.getElementById("date").innerHTML = Date();
-        </script>
-        <h2>Attendance Report(IPG 2016)</h2>
-        <h2>Modelling and Simulation(IT02)</h2>
-                        <table>
-                            <tr>
-                                <th>Sr no.</th>
-                                <th>Present students Roll No.</th>
-                            </tr>
-            """
-        footer = """
-
-                    </table>
-                </body>
-            </html>
-            <footer>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <p>Faculty Coordinator: Dr. Ajay Kumar</p>
-            </footer>
-        """
-        body = ''
-        counter=0
-        for i in result:
-            counter=counter+1
-            body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
-
-        pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
-        return render_template("index.html")
-
-    elif fix==3:
-        header = """
-            <html>
-                <head>
-                    <style>
-                        table, th, td {
-                            border: 1px solid black;
-                        }
-                        th, td {
-                            padding-left: 10px;
-                        }
-                        body {
-                            width: 100%;
-                        }
-                        table {
-                            width: 98%;
-                        }
-                        h2   {text-align: center;}
-                    </style>
-                </head>
-                <body>
+    pdfkit.from_string(header+body+footer, 'WingA_record.pdf', configuration=config, options=options)
+    return render_template("index.html")
+    # if result_wingA:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
 
 
-                    <p id="date"></p>
-        <script>
-        document.getElementById("date").innerHTML = Date();
-        </script>
-        <h2>Attendance Report(IPG 2016)</h2>
-        <h2>Information and System security (IT03)</h2>
-                        <table>
-                            <tr>
-                                <th>Sr no.</th>
-                                <th>Present students Roll No.</th>
-                            </tr>
-            """
-        footer = """
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Society Record</h2>
+    #     <h2>Wing A</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Flatnumber</th>
+    #                             <th>Name</th>
+    #                             <th>Contact Number</th>
+    #                             <th>Entry Time</th>
 
-                    </table>
-                </body>
-            </html>
-            <footer>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <p>Faculty Coordinator: Dr. Saumya Bhadauria</p>
-            </footer>
-        """
-        body = ''
-        counter=0
-        for i in result:
-            counter=counter+1
-            body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
+    #                         </tr>
+    #         """
+    #     footer = """
 
-        pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
-        return render_template("index.html")
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+           
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result_wingA:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td><td>{i[1]}</td><td>{i[2]}</td><td>{i[3]}</td></tr>'
 
-    elif fix==4:
-        header = """
-            <html>
-                <head>
-                    <style>
-                        table, th, td {
-                            border: 1px solid black;
-                        }
-                        th, td {
-                            padding-left: 10px;
-                        }
-                        body {
-                            width: 100%;
-                        }
-                        table {
-                            width: 98%;
-                        }
-                        h2   {text-align: center;}
-                    </style>
-                </head>
-                <body>
-
-
-                    <p id="date"></p>
-        <script>
-        document.getElementById("date").innerHTML = Date();
-        </script>
-        <h2>Attendance Report(IPG 2016)</h2>
-        <h2>Artficial Intelligence(IT04)</h2>
-                        <table>
-                            <tr>
-                                <th>Sr no.</th>
-                                <th>Present students Roll No.</th>
-                            </tr>
-            """
-        footer = """
-
-                    </table>
-                </body>
-            </html>
-            <footer>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <p>Faculty Coordinator: Dr. Ritu Tiwari</p>
-            </footer>
-        """
-        body = ''
-        counter=0
-        for i in result:
-            counter=counter+1
-            body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
-
-        pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
-        return render_template("index.html")
-
-    elif fix==5:
-        header = """
-            <html>
-                <head>
-                    <style>
-                        table, th, td {
-                            border: 1px solid black;
-                        }
-                        th, td {
-                            padding-left: 10px;
-                        }
-                        body {
-                            width: 100%;
-                        }
-                        table {
-                            width: 98%;
-                        }
-                        h2   {text-align: center;}
-                    </style>
-                </head>
-                <body>
+    #     pdfkit.from_string(header+body+footer, 'WingA_record.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+    # if result_wingB:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
 
 
-                    <p id="date"></p>
-        <script>
-        document.getElementById("date").innerHTML = Date();
-        </script>
-        <h2>Attendance Report(IPG 2016)</h2>
-        <h2>Ecosystem and Sustainable Development(IT05)</h2>
-                        <table>
-                            <tr>
-                                <th>Sr no.</th>
-                                <th>Present students Roll No.</th>
-                            </tr>
-            """
-        footer = """
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Society Record</h2>
+    #     <h2>Wing B</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Flatnumber</th>
+    #                             <th>Name</th>
+    #                             <th>Contact Number</th>
+    #                             <th>Entry Time</th>
 
-                    </table>
-                </body>
-            </html>
-            <footer>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <p>Faculty Coordinator: Dr. Arun Agariya</p>
-            </footer>
-        """
-        body = ''
-        counter=0
-        for i in result:
-            counter=counter+1
-            body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
+    #                         </tr>
+    #         """
+    #     footer = """
 
-        pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
-        return render_template("index.html")
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+           
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result_wingB:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td><td>{i[1]}</td><td>{i[2]}</td><td>{i[3]}</td></tr>'
 
-    elif fix==6:
-        header = """
-            <html>
-                <head>
-                    <style>
-                        table, th, td {
-                            border: 1px solid black;
-                        }
-                        th, td {
-                            padding-left: 10px;
-                        }
-                        body {
-                            width: 100%;
-                        }
-                        table {
-                            width: 98%;
-                        }
-                        h2   {text-align: center;}
-                    </style>
-                </head>
-                <body>
-
-
-                    <p id="date"></p>
-        <script>
-        document.getElementById("date").innerHTML = Date();
-        </script>
-        <h2>Attendance Report(IPG 2016)</h2>
-        <h2>Foreign Language(IT06)</h2>
-                        <table>
-                            <tr>
-                                <th>Sr no.</th>
-                                <th>Present students Roll No.</th>
-                            </tr>
-            """
-        footer = """
-
-                    </table>
-                </body>
-            </html>
-            <footer>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <p>Faculty Coordinator: Dr. L Bhutia</p>
-            </footer>
-        """
-        body = ''
-        counter=0
-        for i in result:
-            counter=counter+1
-            body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
-
-        pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
-        return render_template("index.html")
+    #     pdfkit.from_string(header+body+footer, 'WingB_record.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+    # if result_wingC:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
 
 
-@app.route("/poll")
-def poll():
-    lastPersonScannedId = securityApp.getLastPersonScanned()
-    #personScannedData = '{"ID" : "' + lastPersonScannedId + '"}'
-    personScannedData = securityApp.getStudentJson(lastPersonScannedId)
-    return personScannedData
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Society Record</h2>
+    #     <h2>Wing C</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Flatnumber</th>
+    #                             <th>Name</th>
+    #                             <th>Contact Number</th>
+    #                             <th>Entry Time</th>
+
+    #                         </tr>
+    #         """
+    #     footer = """
+
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+           
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result_wingC:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td><td>{i[1]}</td><td>{i[2]}</td><td>{i[3]}</td></tr>'
+
+    #     pdfkit.from_string(header+body+footer, 'WingC_record.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+    # if result_knownmembers:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
+
+
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Society Record</h2>
+    #     <h2>Known Members</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Flatnumber</th>
+    #                             <th>Name</th>
+    #                             <th>Contact Number</th>
+    #                             <th>Entry Time</th>
+
+    #                         </tr>
+    #         """
+    #     footer = """
+
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+           
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result_knownmembers:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td><td>{i[1]}</td><td>{i[2]}</td><td>{i[3]}</td></tr>'
+
+    #     pdfkit.from_string(header+body+footer, 'Known_Members_record.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+    # elif fix==2:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
+
+
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Attendance Report(IPG 2016)</h2>
+    #     <h2>Modelling and Simulation(IT02)</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Present students Roll No.</th>
+    #                         </tr>
+    #         """
+    #     footer = """
+
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <p>Faculty Coordinator: Dr. Ajay Kumar</p>
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
+
+    #     pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+
+    # elif fix==3:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
+
+
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Attendance Report(IPG 2016)</h2>
+    #     <h2>Information and System security (IT03)</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Present students Roll No.</th>
+    #                         </tr>
+    #         """
+    #     footer = """
+
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <p>Faculty Coordinator: Dr. Saumya Bhadauria</p>
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
+
+    #     pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+
+    # elif fix==4:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
+
+
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Attendance Report(IPG 2016)</h2>
+    #     <h2>Artficial Intelligence(IT04)</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Present students Roll No.</th>
+    #                         </tr>
+    #         """
+    #     footer = """
+
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <p>Faculty Coordinator: Dr. Ritu Tiwari</p>
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
+
+    #     pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+
+    # elif fix==5:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
+
+
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Attendance Report(IPG 2016)</h2>
+    #     <h2>Ecosystem and Sustainable Development(IT05)</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Present students Roll No.</th>
+    #                         </tr>
+    #         """
+    #     footer = """
+
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <p>Faculty Coordinator: Dr. Arun Agariya</p>
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
+
+    #     pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+
+    # elif fix==6:
+    #     header = """
+    #         <html>
+    #             <head>
+    #                 <style>
+    #                     table, th, td {
+    #                         border: 1px solid black;
+    #                     }
+    #                     th, td {
+    #                         padding-left: 10px;
+    #                     }
+    #                     body {
+    #                         width: 100%;
+    #                     }
+    #                     table {
+    #                         width: 98%;
+    #                     }
+    #                     h2   {text-align: center;}
+    #                 </style>
+    #             </head>
+    #             <body>
+
+
+    #                 <p id="date"></p>
+    #     <script>
+    #     document.getElementById("date").innerHTML = Date();
+    #     </script>
+    #     <h2>Attendance Report(IPG 2016)</h2>
+    #     <h2>Foreign Language(IT06)</h2>
+    #                     <table>
+    #                         <tr>
+    #                             <th>Sr no.</th>
+    #                             <th>Present students Roll No.</th>
+    #                         </tr>
+    #         """
+    #     footer = """
+
+    #                 </table>
+    #             </body>
+    #         </html>
+    #         <footer>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <br>
+    #           <p>Faculty Coordinator: Dr. L Bhutia</p>
+    #         </footer>
+    #     """
+    #     body = ''
+    #     counter=0
+    #     for i in result:
+    #         counter=counter+1
+    #         body = body + f'<tr><td>{counter}</td><td>{i[0]}</td></tr>'
+
+    #     pdfkit.from_string(header+body+footer, 'attendance.pdf', configuration=config, options=options)
+    #     return render_template("index.html")
+
+
+# @app.route("/poll")
+# def poll():
+#     lastPersonScannedId = securityApp.getLastPersonScanned()
+#     #personScannedData = '{"ID" : "' + lastPersonScannedId + '"}'
+#     personScannedData = securityApp.getStudentJson(lastPersonScannedId)
+#     return personScannedData
 
 if __name__ == '__main__':
     app.run(debug=True)
