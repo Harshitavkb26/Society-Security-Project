@@ -3,7 +3,9 @@ This project is based on Face-recognition and Face-detection for security of the
 
 
 sql credentials
+
 server = 'harshita.database.windows.net'
+
     database = 'society'
     username = 'Harshi'
     password = 'Anjali123'
